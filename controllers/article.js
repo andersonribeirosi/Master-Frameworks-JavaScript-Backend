@@ -7,12 +7,9 @@ var validator = require('validator');
 var controller = {
 
     dadosArtigo: (req, res) => {
-        var artigo = req.body.test;
-
         return res.status(200).send({
             autor: 'Anderson Ribeiro',
             url: 'https://github.com/andersonribeirosi/Master-Frameworks-JavaScript/tree/dev',
-            artigo
         });
     },
     test: (req, res) => {
@@ -21,12 +18,11 @@ var controller = {
         });
     },
     save: (req, res) => {
-
         // Coletar parâmetros por post
         var params = req.body;
         console.log(params);
 
-        // Validar dados (validador)
+        // Valida dados, campos (validador)
         try {
             var validate_title = !validator.isEmpty(params.title);
             var validate_content = !validator.isEmpty(params.content);
@@ -40,15 +36,15 @@ var controller = {
 
         if (validate_title && validate_content) {
 
-            // Cria o objeto para salvar
+            // Instancia o objeto há ser salvo
             var artigo = new Artigo();
 
-            // Atribuir valores
+            // Atribui valores
             artigo.title = params.title;
             artigo.content = params.content;
             artigo.image = null
 
-            // Salvar os Artigos
+            // Salva os Artigos
             artigo.save((err, artigoStored) => {
 
                 if (err || !artigoStored) {
@@ -57,11 +53,13 @@ var controller = {
                         message: 'O artigo não foi salvo!!!'
                     });
                 }
+
+                // Devoler uma resposta
                 return res.status(200).send({
                     status: 'success',
-                    artigo
+                    artigo: artigoStored
                 });
-            })
+            });
 
         } else {
             return res.status(200).send({
@@ -70,12 +68,32 @@ var controller = {
             });
         }
     },
+
     getArtigos: (req, res) => {
-        return res.status(200).send({
-            status: 'success',
-            message: 'Lista de Artigos'
-        })
+
+        // FindAll
+        Artigo.find({}).sort('-_id').exec((err, artigos) => {
+            if (err) {
+                return res.status(500).send({
+                    status: 'error',
+                    message: 'Erro ao retornar os artigos!!!'
+                });
+            }
+
+            if (!artigos) {
+                return res.status(404).send({
+                    status: 'error',
+                    message: 'Não existe nenhum artigo para listar!!!'
+                });
+            }
+            return res.status(200).send({
+                status: 'success',
+                artigos
+            });
+        });
     }
+
+
 };
 
 module.exports = controller;

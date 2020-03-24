@@ -10,7 +10,7 @@ var app = express();
 //Carregar arquivos e caminhos(rotas)
 var artigo_rotas = require('./routes/article')
 
-//Middlewares
+//Middlewares (intermediadores)  - Validação dos valores recebidos via Json
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 

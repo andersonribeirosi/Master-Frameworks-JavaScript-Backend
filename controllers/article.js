@@ -70,9 +70,15 @@ var controller = {
     },
 
     getArtigos: (req, res) => {
+        var last = req.params.last;
+        var query = Artigo.find({});
+
+        if (last || last != undefined) {
+            query.limit(2);
+        }
 
         // FindAll
-        Artigo.find({}).sort('-_id').exec((err, artigos) => {
+        query.sort('-_id').exec((err, artigos) => {
             if (err) {
                 return res.status(500).send({
                     status: 'error',

@@ -9,6 +9,6 @@ router.get('/dados-artigo', ArtigoController.dadosArtigo);
 
 
 router.post('/salvar-artigo', ArtigoController.save);
-router.get('/artigos', ArtigoController.getArtigos);
+router.get('/artigos/:last?', ArtigoController.getArtigos);
 
 module.exports = router;

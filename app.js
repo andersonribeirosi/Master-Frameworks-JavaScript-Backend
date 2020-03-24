@@ -8,6 +8,7 @@ var bodyParser = require('body-parser');
 var app = express();
 
 //Carregar arquivos e caminhos(rotas)
+var artigo_rotas = require('./routes/article')
 
 //Middlewares
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -15,19 +16,8 @@ app.use(bodyParser.json());
 
 //CORS
 
-// Prefixo para as rotas
-
-// Rota do método para a API RestFull
-app.post('/artigos', (req, res) => {
-
-    var test = req.body.test;
-
-    return res.status(200).send({
-        autor: 'Anderson Ribeiro',
-        url: 'https://github.com/andersonribeirosi/Master-Frameworks-JavaScript/tree/dev',
-        test
-    })
-})
+// Carregar Rotas da API e Prefixo para as rotas
+app.use('/api', artigo_rotas);
 
 //Exportar modulo(arquivo atual)
 module.exports = app;

@@ -17,6 +17,57 @@ var controller = {
             message: 'Controlador de Artigos'
         });
     },
+    update: (req, res) => {
+        // Guardando o ID em artigoId
+        var artigoId = req.params.id;
+
+        // Pega o objeto (atributos da requisição) na variável params
+        var params = req.body;
+
+        // Validando os dados
+        try {
+            var validate_title = !validator.isEmpty(params.title);
+            var validate_content = !validator.isEmpty(params.content);
+        } catch (err) {
+            return res.status(404).send({
+                status: 'error',
+                message: 'Faltando dados para enviar !!!'
+            });
+        }
+
+        if(validate_content && validate_title){
+            // Buscar e atualizar
+             Artigo.findOneAndUpdate({_id: artigoId}, params, {new: true}, (err, artigoUpdated) => {
+                 
+                // testa as condições de validação
+                if(err){
+                    return res.status(500).send({
+                        status: 'error',
+                        message: 'Erro na atualização!!!'
+                    });
+                 }
+
+                 if(!artigoUpdated){
+                    return res.status(404).send({
+                        status: 'error',
+                        message: 'O artigo não existe!!!'
+                    });
+                 }
+
+                 // Artigo atualizado
+                 return res.status(200).send({
+                    status: 'success',
+                    artigo: artigoUpdated
+                });
+             })
+        } else {
+            // Devolve uma resposta com um erro
+            return res.status(404).send({
+                status: 'error',
+                message: 'Ocorreu um erro na validação!!!'
+            });
+        }
+    },
 
     save: (req, res) => {
         // Coletar parâmetros por post

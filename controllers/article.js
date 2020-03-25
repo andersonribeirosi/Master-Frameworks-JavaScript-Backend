@@ -17,6 +17,7 @@ var controller = {
             message: 'Controlador de Artigos'
         });
     },
+
     save: (req, res) => {
         // Coletar parâmetros por post
         var params = req.body;
@@ -54,7 +55,7 @@ var controller = {
                     });
                 }
 
-                // Devoler uma resposta
+                // Devolver uma resposta
                 return res.status(200).send({
                     status: 'success',
                     artigo: artigoStored
@@ -69,15 +70,44 @@ var controller = {
         }
     },
 
+    getArtigosById: (req, res) => {
+        var buscarArtigoPorId = req.params.id;
+
+        if (!buscarArtigoPorId || buscarArtigoPorId == null) {
+            return res.status(404).send({
+                status: 'error',
+                message: 'Não existe o artigo!!!'
+            });
+        }
+
+        Artigo.findById(buscarArtigoPorId, (err, artigo) => {
+
+            if (err || !artigo) {
+                return res.status(404).send({
+                    status: 'error',
+                    message: 'Não existe o artigo!!!'
+                });
+            }
+
+            return res.status(200).send({
+                status: 'success',
+                artigo
+            });
+        });
+
+    },
+
+    // FindAll - Listando os artigos mais recentes - sort('-_id')
     getArtigos: (req, res) => {
         var last = req.params.last;
         var query = Artigo.find({});
 
+        // Condição que retorna um limite máximo de artigos listados
         if (last || last != undefined) {
             query.limit(2);
         }
 
-        // FindAll
+        // Método que retorna uma lista de artigos por ID
         query.sort('-_id').exec((err, artigos) => {
             if (err) {
                 return res.status(500).send({
@@ -98,8 +128,6 @@ var controller = {
             });
         });
     }
-
-
 };
 
 module.exports = controller;

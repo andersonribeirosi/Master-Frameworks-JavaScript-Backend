@@ -35,31 +35,31 @@ var controller = {
             });
         }
 
-        if(validate_content && validate_title){
+        if (validate_content && validate_title) {
             // Buscar e atualizar
-             Artigo.findOneAndUpdate({_id: artigoId}, params, {new: true}, (err, artigoUpdated) => {
-                 
+            Artigo.findOneAndUpdate({ _id: artigoId }, params, { new: true }, (err, artigoUpdated) => {
+
                 // testa as condições de validação
-                if(err){
+                if (err) {
                     return res.status(500).send({
                         status: 'error',
                         message: 'Erro na atualização!!!'
                     });
-                 }
+                }
 
-                 if(!artigoUpdated){
+                if (!artigoUpdated) {
                     return res.status(404).send({
                         status: 'error',
                         message: 'O artigo não existe!!!'
                     });
-                 }
+                }
 
-                 // Artigo atualizado
-                 return res.status(200).send({
+                // Artigo atualizado
+                return res.status(200).send({
                     status: 'success',
                     artigo: artigoUpdated
                 });
-             })
+            })
         } else {
             // Devolve uma resposta com um erro
             return res.status(404).send({
@@ -147,6 +147,33 @@ var controller = {
         });
 
     },
+    delete: (req, res) => {
+
+        var artigoId = req.params.id;
+
+        // find and delete
+        Artigo.findOneAndDelete({ _id: artigoId }, (err, artigoDeleted) => {
+
+            if (err) {
+                return res.status(500).send({
+                    status: 'error',
+                    message: 'Erro ao remover'
+                })
+            }
+
+            if (!artigoDeleted) {
+                return res.status(404).send({
+                    status: 'error',
+                    message: 'Este Artigo não existe'
+                })
+            }
+
+            return res.status(200).send({
+                status: 'success',
+                artigos: artigoDeleted
+            });
+        });
+    },
 
     // FindAll - Listando os artigos mais recentes - sort('-_id')
     getArtigos: (req, res) => {
@@ -170,7 +197,7 @@ var controller = {
             if (!artigos) {
                 return res.status(404).send({
                     status: 'error',
-                    message: 'Não existe nenhum artigo para listar!!!'
+                    message: 'Não existe artigo para listar!!!'
                 });
             }
             return res.status(200).send({

@@ -3,6 +3,9 @@
 var Artigo = require('../models/article')
 var validator = require('validator');
 
+var fs = require('fs');
+var path = require('path');
+
 
 var controller = {
 
@@ -16,6 +19,60 @@ var controller = {
         return res.status(200).send({
             message: 'Controlador de Artigos'
         });
+    },
+    upload: (req, res) => {
+
+        // Variável do arquivo (nome)
+        var file_name = 'Imagem não subida...';
+
+        if (!req.files) {
+            return res.status(404).send({
+                status: 'error',
+                message: file_name
+            });
+        }
+
+        // Acessar e guardar o nome e a extensão do arquivo
+        var file_path = req.files.file0.path;
+        var file_split = file_path.split('\\');
+
+        // Nome do arquivo
+        var file_name = file_split[2];
+
+        // Extensão do arquivo
+        var extension_split = file_name.split('\.');
+        var file_ext = extension_split[1];
+
+
+        // Testando condição das extensões das imagens(arquivo)
+        if (file_ext != 'png' && file_ext != 'jpg' && file_ext != 'jpeg' && file_ext != 'gif' && file_ext != 'pdf') {
+            fs.unlink(file_path, (err) => {
+                return res.status(404).send({
+                    status: 'error',
+                    message: 'O formato do arquivo não é válido!'
+                });
+            });
+        } else {
+            
+        var artigoId = req.params.id;
+
+        Artigo.findOneAndUpdate({_id: artigoId}, {image: file_name}, {new: true}, (err, artigoUpdated) => {
+
+            if(err || !artigoUpdated) {
+                return res.status(404).send({
+                    status: 'error',
+                    message: 'Erro ao salvar a imagem do artigo'
+                 });
+            }
+
+            return res.status(200).send({
+               status: 'success',
+               artigo: artigoUpdated
+            });
+        });
+
+        }
+
     },
     update: (req, res) => {
         // Guardando o ID em artigoId

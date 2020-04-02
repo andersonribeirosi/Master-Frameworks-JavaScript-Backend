@@ -1,0 +1,56 @@
+A= 500
+B = 900
+
+Processo 1 (Saque)
+1a x = 500 
+1b x = 500 - 200 = 300
+1c x = 300
+
+Processo 2 (Saque)
+2a y = 300
+2b y = 300 - 100
+2c y = 200
+
+Processo 1(Deposito)
+1d x = 900 
+1e x = 900 + 100 = 1000
+1f x = 1000 
+
+Processo 2(Deposito)
+2d x = 1000
+2e x = 1000 + 200
+2f x = 1200 
+
+Semáforos
+Cliente A 
+down(mutexA)
+1a
+1b
+1c
+up (mutexA)
+down (mutexB)
+1d
+1e
+1f
+up(mutexB
+
+Processo 2
+down(mutexA)
+2a
+2b
+2c
+up(mutexA
+down(mutexB)
+2d
+2e
+2f
+up(mutexB)
+
+
+
+
+questoes 
+30 e 32
+62
+
+56 e 60 do livro - dia 8

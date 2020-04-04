@@ -36,7 +36,7 @@ var controller = {
         var file_path = req.files.file0.path;
         var file_split = file_path.split('\\');
 
-        // Nome do arquivo
+        // Arquivo
         var file_name = file_split[2];
 
         // Extensão do arquivo
@@ -53,23 +53,23 @@ var controller = {
                 });
             });
         } else {
-            
-        var artigoId = req.params.id;
 
-        Artigo.findOneAndUpdate({_id: artigoId}, {image: file_name}, {new: true}, (err, artigoUpdated) => {
+            var artigoId = req.params.id;
 
-            if(err || !artigoUpdated) {
-                return res.status(404).send({
-                    status: 'error',
-                    message: 'Erro ao salvar a imagem do artigo'
-                 });
-            }
+            Artigo.findOneAndUpdate({ _id: artigoId }, { image: file_name }, { new: true }, (err, artigoUpdated) => {
 
-            return res.status(200).send({
-               status: 'success',
-               artigo: artigoUpdated
+                if (err || !artigoUpdated) {
+                    return res.status(404).send({
+                        status: 'error',
+                        message: 'Erro ao salvar a imagem do artigo'
+                    });
+                }
+
+                return res.status(200).send({
+                    status: 'success',
+                    artigo: artigoUpdated
+                });
             });
-        });
 
         }
 
@@ -125,6 +125,23 @@ var controller = {
             });
         }
     },
+    getImage: (req, res) => {
+
+        var file_image = req.params.image;
+        var file_path = './upload/articles/' + file_image;
+
+        fs.exists(file_path, (exists) => {
+            if(exists){
+                return res.sendFile(path.resolve(file_path));
+            } else {
+                return res.status(404).send({
+                    status: 'error',
+                    message: 'A Imagem não existe!'
+                });
+            }
+        })
+
+    },
 
     save: (req, res) => {
         // Coletar parâmetros por post
@@ -157,7 +174,7 @@ var controller = {
             artigo.save((err, artigoStored) => {
 
                 if (err || !artigoStored) {
-                    return res.status(404).send({
+                    return res.status(400).send({
                         status: 'error',
                         message: 'O artigo não foi salvo!!!'
                     });
@@ -171,7 +188,7 @@ var controller = {
             });
 
         } else {
-            return res.status(200).send({
+            return res.status(404).send({
                 status: 'error',
                 message: 'Dados inválidos!!!'
             });
